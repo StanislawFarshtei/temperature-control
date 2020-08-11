@@ -1,38 +1,58 @@
-import React, {useRef} from 'react';
+import React from 'react';
 import { useState, useEffect } from 'react';
 
 const App = () => {
-  let [tempColor, setTempColor] = useState('cold');
+  const [tempColor, setTempColor] = useState('cold');
   const [value, setValue] = useState(10);
-  const[isRunning, setIsRunning] = useState(false);
-  const [isRunningDown, setRunningDown] = useState(false);
+  const [isClicked, setIsClicked] = useState(false);
+  const [isClickedDown, setIsClickedDown] = useState(false);
+  const [isRunning, setIsRunning] = useState(false);
+  const [isRunningDown, setIsRunningDown] = useState(false);
+  // useEffect(() => {
+  //       if(isRunning) {
+  //           const id = window.setInterval(() => {
+  //               setValue(value => value + 1);
+  //           }, 125);
+  //           return () => window.clearInterval(id);
+  //       }
+  //       if(isRunningDown) {
+  //           const id = window.setInterval(() => {
+  //               setValue(value => value - 1);
+  //           }, 125);
+  //           return () => window.clearInterval(id);
+  //       }
+  //   }, [isRunning, isRunningDown]);
 
-    const countEl = useRef(null);
-    const counterTemp = () => {
-        if (countEl.current >= 15) {
-            setTempColor = 'hot';
-        } else if(countEl < 15) {
-            setTempColor = 'cold';
+    // useEffect(() => {
+    //     if (isClicked) {
+    //         setValue((value) => value + 1);
+    //         setIsClicked(false);
+    //     }
+    // }, [isClicked]);
+
+    useEffect(() => {
+        if (isClickedDown) {
+            setValue((value) => value - 1);
+            setIsClickedDown(false);
         }
+    }, [isClickedDown]);
 
-    };
-
-  useEffect(() => {
-      if(isRunning) {
-          const id = window.setInterval(() => {
-              setValue(value => value + 1);
-          }, 125);
-          return () => window.clearInterval(id);
-      }
-      if(isRunningDown) {
-          const id = window.setInterval(() => {
-              setValue(value => value - 1);
-          }, 125);
-          return () => window.clearInterval(id);
-      }
-  }, [isRunning, isRunningDown]);
-
-
+    useEffect(() => {
+        if (isRunning) {
+            const id = window.setInterval(() => {
+                setValue((value) => value + 1);
+            }, 125);
+            return () => window.clearInterval(id);
+        }
+    }, [isRunning]);
+    useEffect(() => {
+        if (isRunningDown) {
+            const id = window.setInterval(() => {
+                setValue((value) => value - 1);
+            }, 125);
+            return () => window.clearInterval(id);
+        }
+    }, [isRunningDown]);
 
   return (
       <div className='app-container'>
@@ -40,8 +60,8 @@ const App = () => {
           <div className={`temperature-display ${tempColor}`}>{value}°C</div>
         </div>
         <div className='button-container'>
-          <button ref={counterTemp()} onMouseDown={()=> setRunningDown(true)} onMouseUp={()=> setRunningDown(false)}>-</button>
-          <button onMouseDown={()=> setIsRunning(true)} onMouseUp={()=> setIsRunning(false)}>+</button>
+          <button  onClick={() => setIsClicked(true)} onMouseDown={() => setIsRunning(true)} onMouseUp={() => setIsRunning(false)}>+</button>
+          <button onClick={() => setIsClickedDown(true)} onMouseDown={() => setIsRunningDown(true)} onMouseUp={() => setIsRunningDown(false)}>-</button>
         </div>
       </div>
   );
