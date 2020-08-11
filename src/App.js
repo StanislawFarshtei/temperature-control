@@ -2,7 +2,7 @@ import React from 'react';
 import { useState, useEffect } from 'react';
 
 const App = () => {
-  let [tempColor, setTempColor] = useState('cold');
+  const [tempColor, setTempColor] = useState('cold');
   const [value, setValue] = useState(10);
   const [isClicked, setIsClicked] = useState(false);
   const [isClickedDown, setIsClickedDown] = useState(false);
@@ -10,23 +10,31 @@ const App = () => {
   const [isRunningDown, setIsRunningDown] = useState(false);
 
     useEffect(() => {
-       if(isClicked(true) && isRunning(true) && value >=15) {
-           setTempColor = 'hot';
-       } else if (isClickedDown(true) && isRunningDown(true) && value < 15) {
-           setTempColor = 'cold';
+       if (value >= 30){
+           setIsRunning(false);
+       } else if (value < 1) {
+           setIsRunningDown(false);
+       }
+    });
+
+    useEffect(() => {
+       if(value >= 15) {
+           setTempColor('hot');
+       } else if (value < 15) {
+           setTempColor('cold');
        }
     });
 
     useEffect(() => {
         if (isClicked) {
-            setValue((value) => value + 1);
+            setValue((value) => value >= 30 ? value : value + 1);
             setIsClicked(false);
         }
     }, [isClicked]);
 
     useEffect(() => {
         if (isClickedDown) {
-            setValue((value) => value - 1);
+            setValue((value) => value <= 0 ? value : value - 1);
             setIsClickedDown(false);
         }
     }, [isClickedDown]);
@@ -49,16 +57,18 @@ const App = () => {
         }
     }, [isRunningDown]);
 
-  return (
+    return (
       <div className='app-container'>
         <div className='temperature-display-container'>
           <div className={`temperature-display ${tempColor}`}>{value}°C</div>
         </div>
         <div className='button-container'>
           <button
+              disabled={ value >= 30 }
               onClick={() => setIsClicked(true)} onMouseDown={() => setIsRunning(true)}
               onMouseUp={() => setIsRunning(false)}>+</button>
           <button
+              disabled={ value <= 0 }
               onClick={() => setIsClickedDown(true)} onMouseDown={() => setIsRunningDown(true)}
               onMouseUp={() => setIsRunningDown(false)}>-</button>
         </div>
